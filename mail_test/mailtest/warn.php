@@ -93,6 +93,7 @@ function change()
 	$page=$_GET['page']; //获得当前的页面值
 	if ($warn_time==NULL)
 		$warn_time=5;
+	$warn_time=$warn_time*60;
 	$count=mysql_query("select count(*) from mailtest where timespace > $warn_time"); //获得记录总数
 	$rs=mysql_fetch_array($count); 
 	$totalNumber=$rs[0];
@@ -101,7 +102,7 @@ function change()
 	 $page=1;
 	} //如果没有值,则赋值1
 	$startCount=($page-1)*$perNumber; //分页开始,根据此方法计算出开始的记录
-	$result=mysql_query("select * from mailtest where timespace>$warn_time  limit $startCount,$perNumber"); //根据前面的计算出开始的记录和记录数
+	$result=mysql_query("select * from mailtest where timespace>$warn_time limit  $startCount,$perNumber"); //根据前面的计算出开始的记录和记录数
 	while ($row=mysql_fetch_array($result)) {
 		  echo "<tr>";
 		 // echo "<td>" . $row['id'] . "</td>";

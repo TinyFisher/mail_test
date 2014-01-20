@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<!--<html lang="en">
 <head>
     <title>邮件测试系统</title>
      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -23,6 +23,7 @@
    </div>
   </div>
 </div>
+-->
 <?php
 $send_username=$_POST['send_username'];
 $send_passwd=$_POST['send_passwd'];
@@ -30,8 +31,17 @@ $send_server=$_POST['send_server'];
 $time_space=$_POST['time_space'];
 $rec_username=$_POST['rec_username'];
 $rec_passwd=$_POST['rec_passwd'];
-$msg_arr=array('send_username'=>$send_username, 'send_passwd'=>$send_passwd,'send_server'=>$send_server,'time_space'=>$time_space,'rec_username'=>$rec_username,'rec_passwd'=>$rec_passwd);
+$act_start=$_POST['start'];
+$act_stop=$_POST['stop'];
+$command=$_POST['command'];
+//echo "act is ". $command . "\n";
+if ($act_start==NULL)
+	$act_start="null";
+if ($act_stop==NULL)
+	$act_stop="null";
+$msg_arr=array('send_username'=>$send_username, 'send_passwd'=>$send_passwd,'send_server'=>$send_server,'time_space'=>$time_space,'rec_username'=>$rec_username,'rec_passwd'=>$rec_passwd,'act_start'=>$act_start,'act_stop'=>$act_stop,'command'=>$command);
 $jsoncode=json_encode($msg_arr); //json格式的发送消息
+//echo $jsoncode;
 error_reporting(E_ALL);  
 set_time_limit(0);  
 $address="localhost";
@@ -43,7 +53,7 @@ if ($socket < 0)
 }  
 else  
 {  
-	echo "创建socket成功.\n";  
+	echo "create socket success.\n";  
 }  
   
 //echo "试图连接 '$address' 端口 '$service_port'...<br>";  
@@ -54,7 +64,7 @@ if ($result < 0)
 }  
 else  
 {  
-	echo "连接server成功<br>";  
+	echo "connect server success!<br>";  
 }  
   
 //$in = "1\r\n";  
@@ -66,15 +76,18 @@ if(!socket_write($socket, $jsoncode, strlen($jsoncode)))
 }  
 else  
 {  
-	echo "发送到服务器信息成功！<br>";  
-	echo "发送的内容为:<font color='red'>$jsoncode</font> <br&gt;";  
+	echo "send msg success!<br>";  
+//	echo "发送的内容为:<font color='red'>$jsoncode</font> <br&gt;";  
 }  
   
 socket_close($socket);  
+echo "<script language=javascript>history.go(-1)</script>";
 ?>
+<!--
 <br>
 <br>
 <br>
 <button type="button" class="btn" onclick ="location.href='index.php'" >返回</button>
 </div>
 </body>
+-->

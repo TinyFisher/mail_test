@@ -11,6 +11,8 @@ import poplib
 from email import parser
 host='localhost'
 port=8001
+send_thread_flag=1
+rec_thread_flag=1
 
 def sendmail_thread(send_username,send_passwd,send_server,time_space,rec_username): 
 	print "sendmail_thread is running"
@@ -28,7 +30,7 @@ def sendmail_thread(send_username,send_passwd,send_server,time_space,rec_usernam
 	i=cur.rowcount
 	try:
 		s = smtplib.SMTP()
-		while True:
+		while send_thread_flag==1:
 			s.connect(mail_host)
 			s.login(mail_user,mail_pass)
 			msg = MIMEText("mailtest")  #mail content 
@@ -58,7 +60,7 @@ def recmail_thread(rec_username,rec_passwd):
 	username = rec_username
 	password = rec_passwd
 	
-	while 1:
+	while rec_thread_flag==1:
 		try:
 			con=MySQLdb.Connection('localhost','root','19890804','mailtest')
 			cur=con.cursor()
@@ -127,9 +129,22 @@ if __name__ == '__main__':
 			time_space= msg["time_space"]
 			rec_username= msg["rec_username"]
 			rec_passwd= msg["rec_passwd"]
+			act_stop=msg["act_stop"]
+			act_start=msg["act_start"]
+			command=msg["command"]
+			#print command
 			#todo
-			thread.start_new_thread(sendmail_thread,(send_username,send_passwd,send_server,time_space,rec_username))
-			thread.start_new_thread(recmail_thread,(rec_username,rec_passwd))
+			if command=="start":
+				print "start send_thread and rec_thread"
+				send_thread_flag=1
+				rec_thread_flag=1
+				thread.start_new_thread(sendmail_thread,(send_username,send_passwd,send_server,time_space,rec_username))
+				thread.start_new_thread(recmail_thread,(rec_username,rec_passwd))
+			elif command=="stop":
+				send_thread_flag=0
+				print "stop send_thread and rec_thread"
+				time.sleep(30) 
+				rec_thread_flag=0
 		except socket.timeout:
 			print 'time out'
 			connection.close()
